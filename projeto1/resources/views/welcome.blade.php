@@ -4,36 +4,38 @@
 
 @section('content')
 
-        <h1>Algum título</h1>
-        <img src="/img/banner.jpg" alt="Imagem da plateia">
-        @if(10 > 11)
-            <p>A condição é true</p>
-        @else
-            <p>A condição é falsa</p>
-        @endif
+<div id="search-container" class="col-md-12">
+    <h1>Busque um evento</h1>
+    <form action="/" method="GET">
+        <input type="text" id="search" name="search" class="form-control" placeholder="Procurar...">
+    </form>
+</div>
+<div id="events-container" class="col-md-12">
+    @if($search)
+    <h2>Buscando por: {{ $search }}</h2>
+    @else
+    <h2>Próximos Eventos</h2>
+    <p class="subtitle">Veja os eventos dos próximos dias</p>
+    @endif
 
-        @if($nome == "Leonardo")
-            <p>O nome do futuro programador em Laravel é {{ $nome }}, e ele tem {{ $idade }} anos de idade! Além disso, trabalha como {{ $profissao }}</p>
-        @endif
-
-        @for($i = 0; $i < count($array); $i++)
-            <p>Índice: {{ $i }} - Valor {{ $array[$i] }}</p>
-            @if($i == 2)
-                <p>(Esse é o índice {{ $i }} !!)</p>
-            @endif
-        @endfor
-
-        @foreach($nomes as $nome)
-            <p>{{ $loop->index }}</p>
-            <p>{{ $nome }}</p>
+    <div id="cards-container" class="row">
+        @foreach($events as $event)
+        <div class="card col-md-3">
+            <img src="/img/events/{{ $event->image }}" alt="{{ $event->title }}">
+            <div class="card-body">
+                <p class="card-date">{{ date('d/m/Y', strtotime($event->date)) }}</p>
+                <h5 class="card-title">{{ $event->title }}</h5>
+                <p class="card-participants">X Participantes</p>
+                <a href="events/{{ $event->id }}" class="btn btn-primary">Saber mais</a>
+            </div>
+        </div>
         @endforeach
-
-        @php 
-            $name = "Leonardo";
-            echo $name;
-        @endphp
-
-        <!-- Fazendo comentário com o Blade -->
-        {{-- Esté é um comentário no Blade --}}
+        @if(count($events) == 0 && $search)
+            <p>Não foi possível encontrar nenhum evento com '{{ $search }}'! <a href="/">Ver eventos disponíveis</a></p>
+        @elseif(count($events) == 0)
+            <p>Não há eventos disponíveis</p>
+        @endif
+    </div>
+</div>
 
 @endsection
